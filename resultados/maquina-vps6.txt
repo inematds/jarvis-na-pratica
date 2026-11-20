@@ -1,5 +1,5 @@
 # máquina da medição (VPS6), coletado 2026-11-20T01:36:46-03:00
-srv1162715
+(servidor de teste)
 cpus: 4
                total        used        free      shared  buff/cache   available
 Mem:              15           3           2           0          10          12

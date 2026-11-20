@@ -83,7 +83,7 @@ def rodar_cenario(tmp_path, donos):
     area = pathlib.Path(p.config.area)
     (area / "logs").mkdir(parents=True, exist_ok=True)
     (area / "logs" / "a.log").write_text("x")
-    bot = Telegram("TOKEN-FALSO", donos, f"http://127.0.0.1:{srv.server_port}", p.auditoria, espera=0)
+    bot = telegram_jarvis.canal_telegram()("TOKEN-FALSO", donos, f"http://127.0.0.1:{srv.server_port}", p.auditoria, espera=0)
     ao_receber = telegram_jarvis.fazer_ao_receber(p, lambda n: CerebroRoteiro(n), "claude")
     return srv, p, area, bot, ao_receber
 
@@ -161,3 +161,36 @@ def test_uma_instancia_so(tmp_path):
     with pytest.raises(SystemExit):
         telegram_jarvis.uma_instancia(tmp_path / "x.lock")
     trava.close()
+
+
+def test_com_dono_cadastrado_estranho_e_ignorado_e_auditado(tmp_path):
+    srv, p, area, bot, ao = rodar_cenario(tmp_path, [DONO])
+
+    async def cenario():
+        for texto in ("oi", "apaga a pasta logs", "/cerebro openrouter", "/sim"):
+            FalsoTelegram.mensagem(texto, de=ESTRANHO)
+            await bot.uma_rodada(ao)
+        await asyncio.sleep(0.2)
+        assert FalsoTelegram.enviados == []                 # nenhuma resposta ao estranho
+        assert ao.estado["nome"] == "claude"                # nem trocou o cérebro
+        novos = await enviar_e_esperar(bot, ao, "/id", "Seu id é", de=ESTRANHO)
+        assert len(novos) == 1                              # só o /id responde
+    asyncio.run(cenario())
+    srv.shutdown()
+    assert (area / "logs").exists()
+    ignorados = [l for l in p.auditoria.ultimas(50) if l.get("tipo") == "telegram_ignorado"]
+    assert len(ignorados) == 4 and all(str(l.get("remetente")) == str(ESTRANHO) for l in ignorados)
+
+
+def test_yes_e_no_tambem_aprovam(tmp_path):
+    srv, p, area, bot, ao = rodar_cenario(tmp_path, [DONO])
+
+    async def cenario():
+        await enviar_e_esperar(bot, ao, "apaga a pasta logs", "Posso rodar")
+        await enviar_e_esperar(bot, ao, "/no", "não rodei")
+        assert (area / "logs").exists()
+        await enviar_e_esperar(bot, ao, "apaga a pasta logs", "Posso rodar")
+        await enviar_e_esperar(bot, ao, "/yes", "saída 0")
+        assert not (area / "logs").exists()
+    asyncio.run(cenario())
+    srv.shutdown()

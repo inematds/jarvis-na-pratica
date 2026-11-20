@@ -20,8 +20,28 @@ DESCRICAO = {
     "openrouter": "OpenRouter, pago por uso (na nossa medição, a conversa de 6 pedidos custou US$ 0,0009)",
 }
 AJUDA = ("Sou o Jarvis. Peça em português: \"quanto espaço livre tem no disco?\", \"lembre que…\", "
-         "\"apaga a pasta X\" (eu pergunto antes de mudar algo; responda /sim ou /nao).\n\n"
+         "\"apaga a pasta X\" (eu pergunto antes de mudar algo; responda /sim ou /nao — /yes e /no também valem).\n\n"
          "/cerebro mostra qual IA está pensando · /cerebro claude|codex|openrouter troca · /id mostra o seu id")
+
+
+SINONIMOS = {"/yes": "/sim", "/si": "/sim", "/sí": "/sim", "/no": "/nao"}   # só os comandos com barra
+
+
+def canal_telegram():
+    """O canal do INTELECTO, aceitando também /yes /no (inglês) e /si /no (espanhol) na aprovação."""
+    from intelecto.canais.telegram import Telegram
+
+    class TelegramMultilingue(Telegram):
+        async def api(self, metodo, **params):
+            d = await super().api(metodo, **params)
+            if metodo == "getUpdates":
+                for u in d.get("result", []):
+                    msg = u.get("message") or {}
+                    t = (msg.get("text") or "").strip()
+                    if t.lower() in SINONIMOS:
+                        msg["text"] = SINONIMOS[t.lower()]
+            return d
+    return TelegramMultilingue
 
 
 def ler_env(caminho) -> dict:
@@ -83,8 +103,8 @@ def fazer_ao_receber(p, criar, nome_inicial):
 
 async def rodar(nome, executor="caixa"):
     import cerebros
-    from intelecto.canais.telegram import Telegram
     from jarvis import montar_jarvis
+    Telegram = canal_telegram()
 
     env = ler_env(os.environ.get("JARVIS_ENV", AQUI / ".env"))
     token = os.environ.get("TELEGRAM_BOT_TOKEN") or env.get("TELEGRAM_BOT_TOKEN", "")

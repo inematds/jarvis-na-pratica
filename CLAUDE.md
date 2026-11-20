@@ -8,7 +8,7 @@ Jarvis do INTELECTO v2 com três cérebros trocáveis (Claude Code e Codex pela 
 - Número no guia = número em `resultados/`. Mudou a medição, refaça a tabela do guia nas 3 línguas e nos 3 READMEs.
 - Onde roda a demonstração: VPS6 (`~/kits/jarvis-na-pratica`, usuário nmaldaner). É CLI, nada fica no ar.
 - Modo Telegram (20/11/2026): bot @inemavpsjbot, só o dono 7388953786. Token SÓ no `.env` do kit na VPS6 (600) e em `~/projetos/wifi/.env` (`TG_JARVISPRATICA_TOKEN`): nunca imprimir, commitar, logar ou pôr no guia. Bot API autorizada só neste bot. Unit de usuário `jarvis-na-pratica-telegram` na VPS6 (cérebro inicial claude, caixa Docker, memória em `dados/`). Não mandar mensagem ao Nei pelo bot.
-- Testes: `python3 -m pytest -q testes` (sem modelo e sem Telegram; 13).
+- Testes: `python3 -m pytest -q testes` (sem modelo e sem Telegram; 15).
 
 ## Self-learning
 
