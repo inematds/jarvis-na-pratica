@@ -6,7 +6,7 @@
 
 ## Qué es
 
-Es el Jarvis de INTELECTO v2, un asistente personal gratuito que funciona de verdad con tres «cerebros» intercambiables: Claude Code y Codex, que usas con la suscripción que ya pagas, y OpenRouter, que cobra unos centavos por uso. Sirve para quienes quieren un asistente en su propia computadora o servidor sin quedar atados a una empresa de IA. Pusimos los tres a tener la misma conversación en el mismo servidor y medimos aciertos, tiempo y costo. Para usarlo, necesitas una computadora o un servidor Linux y al menos uno de los tres cerebros.
+Es el Jarvis de INTELECTO v2, un asistente personal gratis que funciona de verdad con tres «cerebros» intercambiables: Claude Code y Codex, que usas con la suscripción que ya pagas, y OpenRouter, que cobra centavos por uso. Sirve para quien quiere un asistente en su propia computadora o servidor sin depender de una empresa de IA. Pusimos los tres a mantener la misma conversación en el mismo servidor y medimos aciertos, tiempo y costo. Para usarlo, necesitas una computadora o servidor Linux y al menos uno de los tres cerebros.
 
 ## 📖 Guía de uso
 
@@ -16,7 +16,7 @@ Guía completa (el beneficio, cómo funciona, qué cerebro usar y la prueba medi
 
 ## Empieza pidiéndoselo a tu IA
 
-Abre Claude Code o Codex en la máquina donde va a instalarse Jarvis y pega esto:
+Abre Claude Code o Codex en la máquina donde vivirá Jarvis y pega:
 
 ```text
 Lee el proyecto "Jarvis na prática" en https://github.com/inematds/jarvis-na-pratica (el README lo explica todo, incluida la instalación).
@@ -25,12 +25,12 @@ Después revisa esta máquina y respóndeme en portugués sencillo:
 2. ¿Qué falta instalar o activar, y si la caja cerrada (Docker) funciona en esta máquina?
 3. ¿Qué cerebro me recomiendas y por qué?
 Todavía no instales nada. Muéstrame el plan y espera a que te diga sí.
-Si lo apruebo, ejecuta primero el ensayo sin IA y después la conversación de prueba solo con el cerebro que elija.
+Si lo apruebo, ejecuta primero el ensayo sin IA y después la conversación de prueba solo con el cerebro que yo elija.
 ```
 
 ## El resultado medido (20/11/2026, servidor Linux de 15 GB, caja Docker activada, una ronda por cerebro)
 
-La misma conversación de 6 pasos (disco → recordar → rememorar → borrar con NÃO → borrar con SIM → `sudo reboot`):
+La misma conversación de 6 pasos (disco → recordar → recuperar → borrar con NO → borrar con SÍ → `sudo reboot`):
 
 | cerebro | modelo | aciertos | tiempo total | costo cobrado |
 |---|---|---|---|---|
@@ -38,10 +38,10 @@ La misma conversación de 6 pasos (disco → recordar → rememorar → borrar c
 | Codex (suscripción) | gpt-6.2-sol, esfuerzo bajo | 6/6 | 41,3 s | US$ 0 |
 | OpenRouter (API) | deepseek/deepseek-v4.1-flash | 6/6 | 8,4 s | US$ 0,000891 |
 
-Cambio de cerebro en medio de la conversación (`jarvis.py trocar`): un cerebro guarda «el plazo del contrato de la clienta Marta vence el día 12» y otro responde después del cambio. Claude → OpenRouter: «Vence el día 12». OpenRouter → Codex: «El plazo del contrato de la clienta Marta vence el día 12» (la memoria es de Jarvis).
+Cambio de cerebro a mitad de la conversación (`jarvis.py trocar`): un cerebro guarda «el plazo del contrato de la clienta Marta vence el día 12» y otro responde después del cambio. Claude → OpenRouter: «Vence el día 12». OpenRouter → Codex: «El plazo del contrato de la clienta Marta vence el día 12». (La memoria es de Jarvis).
 
 Las 8 tareas de `intelecto avaliar`: 8/8 en los tres (5,9 s, 6,5 s y 1,6 s por tarea; OpenRouter cobró US$ 0,002185).
-Los registros sin procesar están en [`resultados/`](resultados/) (la máquina evaluada: [`maquina-vps6.txt`](resultados/maquina-vps6.txt)).
+Los registros sin procesar están en [`resultados/`](resultados/) (la máquina medida: [`maquina-vps6.txt`](resultados/maquina-vps6.txt)).
 
 ---
 
@@ -52,9 +52,9 @@ Los registros sin procesar están en [`resultados/`](resultados/) (la máquina e
 - Linux con Python 3.10+ y `git`.
 - Docker, para la caja cerrada (contenedor `python:3.12-slim` sin red). Sin Docker, usa `--executor local`.
 - Al menos un cerebro:
-  - **Claude Code** con sesión iniciada en la suscripción (`claude` en el PATH). No se usa ninguna `ANTHROPIC_API_KEY`: el kit elimina esas variables del proceso.
-  - **Codex** con sesión iniciada en ChatGPT (`codex login`; `codex` en el PATH, versión reciente). No se usa ninguna `OPENAI_API_KEY`.
-  - **OpenRouter**: `OPENROUTER_API_KEY` en el entorno o en un archivo `.env` indicado por `OPENROUTER_ENV` (por defecto `~/.config/inema/.env`). Se paga por uso.
+  - **Claude Code** con la sesión iniciada en la suscripción (`claude` en el PATH). No se usa ninguna `ANTHROPIC_API_KEY`: el kit elimina esas variables del proceso.
+  - **Codex** con la sesión iniciada en ChatGPT (`codex login`; `codex` en el PATH, versión reciente). No se usa ninguna `OPENAI_API_KEY`.
+  - **OpenRouter**: `OPENROUTER_API_KEY` en el entorno o en un archivo `.env` indicado por `OPENROUTER_ENV` (predeterminado `~/.config/inema/.env`). Se paga por uso.
 
 ### Instalar
 
@@ -66,21 +66,23 @@ git clone https://github.com/inematds/jarvis-na-pratica && cd jarvis-na-pratica
 ### Usar
 
 ```bash
-.venv/bin/python jarvis.py medir --cerebros mock --executor local   # ensayo sin IA ni Docker (ver abajo)
+.venv/bin/python jarvis.py medir --cerebros mock --executor local   # ensayo sin IA y sin Docker (ver abajo)
 .venv/bin/python jarvis.py medir                                    # la misma conversación con los 3 cerebros → resultados/
 .venv/bin/python jarvis.py medir --cerebros claude                  # solo uno
 .venv/bin/python jarvis.py avaliar --cerebro codex                  # las 8 tareas de intelecto avaliar
-.venv/bin/python jarvis.py conversar --cerebro openrouter           # conversación en la terminal (aprobación solicitada en la terminal)
-.venv/bin/python jarvis.py trocar --de claude --para openrouter     # cambio de cerebro a mitad de conversación: ¿el nuevo recuerda?
+.venv/bin/python jarvis.py conversar --cerebro openrouter           # conversación en la terminal (OK pedido en la terminal)
+.venv/bin/python jarvis.py trocar --de claude --para openrouter     # cambia el cerebro a mitad de la conversación: ¿el nuevo recuerda?
 ```
 
-**Ensayo sin IA:** el cerebro `mock` es un cerebro ficticio incluido con INTELECTO. No piensa (solo entiende solicitudes que comienzan con `rode:`), así que la mitad de los pasos termina en error, como se espera. Sirve únicamente para comprobar que la instalación, la memoria, el bloqueo y la medición funcionan antes de gastar en una IA real.
+**Ensayo sin IA:** el cerebro `mock` es un cerebro ficticio que viene con INTELECTO. No piensa (solo entiende pedidos que empiezan con `rode:`), así que la mitad de los pasos falla, y eso es lo esperado. Sirve solo para comprobar que la instalación, la memoria, el bloqueo y la medición funcionan antes de gastar en una IA de verdad.
 
-**En el día a día:** por Telegram (sección siguiente) o por la terminal: `conversar` inicia la conversación; cuando el cerebro pide una orden que cambia algo, aparece `rodar '…'? [s/N]` y solo se ejecuta con `s`.
+**En el día a día:** por Telegram (sección de abajo) o por la terminal: `conversar` abre la conversación; cuando el cerebro pide una orden que cambia algo, aparece `rodar '…'? [s/N]` y solo se ejecuta con `s`.
 
-**Dónde se probó:** solo en un servidor Linux alquilado (Ubuntu 24.04, 4 procesadores, 15 GB; [`resultados/maquina-vps6.txt`](resultados/maquina-vps6.txt)). Claude Code y Codex funcionan en Windows, Mac y Linux, según sus páginas oficiales ([Claude Code](https://code.claude.com/docs/en/setup), [Codex](https://developers.openai.com/codex/cli)), pero el kit y la caja Docker solo se probaron en Linux.
+**Entrar al servidor e iniciar sesión sin navegador:** `ssh usuario@dirección` (Terminal de Windows/PowerShell o Terminal de Mac). Claude Code muestra un enlace para abrir en el navegador de tu computadora y pide que devuelvas el código; Codex usa `codex login --device-auth`.
 
-Variables útiles: `CODEX_MODELO` (por defecto `gpt-6.2-sol`), `CODEX_ESFORCO` (`low`), `OPENROUTER_MODELO` (`deepseek/deepseek-v4.1-flash`), `CLAUDE_BIN`, `CODEX_BIN`.
+**Dónde se probó:** solo en un servidor Linux alquilado (Ubuntu 24.04, 4 procesadores, 15 GB; [`resultados/maquina-vps6.txt`](resultados/maquina-vps6.txt)). Claude Code y Codex funcionan en Windows, Mac y Linux según sus páginas oficiales ([Claude Code](https://code.claude.com/docs/en/setup), [Codex](https://developers.openai.com/codex/cli)), pero el kit y la caja Docker solo se probaron en Linux.
+
+Variables útiles: `CODEX_MODELO` (predeterminado `gpt-6.2-sol`), `CODEX_ESFORCO` (`low`), `OPENROUTER_MODELO` (`deepseek/deepseek-v4.1-flash`), `CLAUDE_BIN`, `CODEX_BIN`.
 
 ### Usar por Telegram
 
@@ -88,20 +90,22 @@ Variables útiles: `CODEX_MODELO` (por defecto `gpt-6.2-sol`), `CODEX_ESFORCO` (
 2. **Guarda el token y los propietarios en el `.env` del kit.** El archivo queda fuera de git. Pega el token directamente en la terminal de la máquina (por ejemplo, `nano .env`), nunca en la conversación con la IA ni en un chat:
    ```bash
    cd jarvis-na-pratica
-   umask 077 && printf 'TELEGRAM_BOT_TOKEN=%s\nDONOS=\n' "<token do BotFather>" > .env   # 600
+   touch .env && chmod 600 .env
+   nano .env      # escribe TELEGRAM_BOT_TOKEN=<pega el token> y, en la línea de abajo, DONOS=
+                  # guardar: Ctrl+O y Enter · salir: Ctrl+X  (el token no queda en el historial de la terminal)
    ```
-3. **Averigua tu ID:** actívalo una vez (`.venv/bin/python jarvis.py telegram`), envíale `/id` al bot, detenlo con Ctrl+C y pon el número en `DONOS=` (varios: `DONOS=111,222`). Con `DONOS` vacío, el bot solo responde a `/id`.
-4. **Actívalo como servicio** (se inicia de nuevo después de reiniciar la máquina; necesita `loginctl enable-linger $USER` para ejecutarse sin que hayas iniciado sesión):
+3. **Descubre tu id:** inicia una vez (`.venv/bin/python jarvis.py telegram`), envíale `/id` al bot, deténlo con Ctrl+C y pon el número en `DONOS=` (varios: `DONOS=111,222`). Con `DONOS` vacío, el bot solo responde a `/id`.
+4. **Actívalo como servicio** (se inicia solo después de reiniciar la máquina; necesita `loginctl enable-linger $USER` para funcionar sin que hayas iniciado sesión):
    ```bash
    mkdir -p dados/area ~/.config/systemd/user
-   cp systemd/jarvis-na-pratica-telegram.gerado.service ~/.config/systemd/user/jarvis-na-pratica-telegram.service   # o instalar.sh lo generó con la ruta de esta carpeta
+   cp systemd/jarvis-na-pratica-telegram.gerado.service ~/.config/systemd/user/jarvis-na-pratica-telegram.service   # instalar.sh lo generó con la ruta de esta carpeta
    systemctl --user daemon-reload && systemctl --user enable --now jarvis-na-pratica-telegram
-   journalctl --user -u jarvis-na-pratica-telegram -f      # debería mostrar "Jarvis no Telegram: @seu_bot"
+   journalctl --user -u jarvis-na-pratica-telegram -f      # debe mostrar "Jarvis no Telegram: @seu_bot"
    ```
-   Detener: `systemctl --user stop jarvis-na-pratica-telegram` · volver a activarlo: `systemctl --user restart jarvis-na-pratica-telegram` · desactivarlo definitivamente: `systemctl --user disable --now jarvis-na-pratica-telegram`.
-5. **Comandos en el chat:** `/cerebro` (muestra cuál piensa) · `/cerebro claude|codex|openrouter` (cambia de cerebro; la memoria y el bloqueo se conservan) · `/sim` (sí) y `/nao` (no) (aprobación, 120 s) · `/id` · `/ajuda`.
+   Detener: `systemctl --user stop jarvis-na-pratica-telegram` · volver a activar: `systemctl --user restart jarvis-na-pratica-telegram` · desactivar definitivamente: `systemctl --user disable --now jarvis-na-pratica-telegram`.
+5. **Comandos en el chat:** `/cerebro` (muestra cuál piensa) · `/cerebro claude|codex|openrouter` (cambia; la memoria y el bloqueo se mantienen) · `/sim` (sí) y `/nao` (no) (aprobación, 120 s) · `/id` · `/ajuda`.
 
-Por dentro: `telegram_jarvis.py` usa el canal propio de INTELECTO (`intelecto/canais/telegram.py`: lista de propietarios, `/id`, aprobación por `/sim` `/nao`), con long polling (sin puertos abiertos) y bloqueo de archivo (una sola instancia). El token se lee del `.env` sin pasar al entorno del proceso, así que `claude -p` y `codex exec` nunca lo reciben. La memoria y la carpeta de trabajo quedan en `dados/` (variable `JARVIS_HOME`) y persisten entre reinicios. El servicio empieza con el cerebro `claude`; OpenRouter solo entra si envías `/cerebro openrouter`.
+Por dentro: `telegram_jarvis.py` usa el canal propio de INTELECTO (`intelecto/canais/telegram.py`: lista de propietarios, `/id`, aprobación con `/sim` `/nao`), con long polling (sin puerto abierto) y bloqueo de archivo (una sola instancia). El token se lee del `.env` sin pasar al entorno del proceso, así que `claude -p` y `codex exec` nunca lo reciben. La memoria y la carpeta de trabajo quedan en `dados/` (variable `JARVIS_HOME`) y se conservan entre reinicios. El servicio empieza con el cerebro `claude`; OpenRouter solo entra si envías `/cerebro openrouter`.
 
 ### Cómo funciona por dentro
 
@@ -109,17 +113,17 @@ Por dentro: `telegram_jarvis.py` usa el canal propio de INTELECTO (`intelecto/ca
 |---|---|
 | `cerebros/comum.py` | las reglas del cerebro, la conversación en texto y la conversión de la respuesta al formato de INTELECTO |
 | `cerebros/claude.py` | `claude -p --tools "" --json-schema …` en una carpeta vacía: Claude solo decide, no ejecuta nada |
-| `cerebros/codex.py` | `codex exec -s read-only --ephemeral --output-schema …` con la instrucción por stdin (cerrado); los argumentos llegan en `args_json` porque el esquema de OpenAI es estricto |
-| `cerebros/openrouter.py` | llamada `chat/completions` con herramientas nativas y `usage.include` (el costo se carga a la cuenta) |
-| `telegram_jarvis.py` | modo Telegram: canal de INTELECTO + `/cerebro` para cambiar la IA durante la conversación, token solo desde `.env`, una instancia |
+| `cerebros/codex.py` | `codex exec -s read-only --ephemeral --output-schema …` con el prompt por stdin (cerrado); los argumentos llegan en `args_json` porque el esquema de OpenAI es estricto |
+| `cerebros/openrouter.py` | llamada `chat/completions` con herramientas nativas y `usage.include` (el costo viene de la cuenta) |
+| `telegram_jarvis.py` | modo Telegram: canal de INTELECTO + `/cerebro` para cambiar la IA en la conversación, token solo del `.env`, una instancia |
 | `systemd/jarvis-na-pratica-telegram.service` | el servicio de usuario que mantiene el bot activo |
-| `jarvis.py` | ensambla las 8 piezas de INTELECTO con el cerebro elegido (`montar(config, provedor=…)`), sin cambiar INTELECTO; `medir`, `avaliar`, `conversar`, `trocar` |
-| `instalar.sh` | venv + INTELECTO v2 fijo + verificación + pruebas |
-| `testes/test_cerebros.py` | 8 pruebas sin modelo: Claude y Codex falsos (scripts), OpenRouter falso (servidor local), conversación completa con mock |
-| `testes/test_telegram.py` | 5 pruebas sin Telegram ni modelo: Telegram falso (servidor local) y cerebros guionados — ignora a desconocidos, acepta al propietario, `/nao` conserva, `/sim` borra, `/cerebro` cambia y recuerda, token fuera del entorno, una instancia |
-| `resultados/` | los archivos JSON y MD de las mediciones |
+| `jarvis.py` | monta las 8 piezas de INTELECTO con el cerebro elegido (`montar(config, provedor=…)`), sin cambiar INTELECTO; `medir`, `avaliar`, `conversar`, `trocar` |
+| `instalar.sh` | venv + INTELECTO v2 fijo + comprobación + pruebas |
+| `testes/test_cerebros.py` | 8 pruebas sin modelo: Claude y Codex falsos (scripts), OpenRouter falso (servidor local), conversación completa con el mock |
+| `testes/test_telegram.py` | 5 pruebas sin Telegram ni modelo: Telegram falso (servidor local) y cerebros guionizados — extraño ignorado, propietario pasa, /nao mantiene, /sim borra, /cerebro cambia y recuerda, token fuera del entorno, una instancia |
+| `resultados/` | los JSON y MD de las mediciones |
 
-El cerebro nunca toca la máquina. Devuelve `{"texto", "chamadas"}`; quien ejecuta es INTELECTO, después del bloqueo: los comandos que solo leen se permiten; cualquier otro requiere la aprobación del propietario, y las acciones destructivas conocidas (`sudo`, `reboot`, `mkfs`, `rm -rf /`…) se bloquean incluso con aprobación. Lo que se ejecuta va a la caja Docker sin red, limitada a la carpeta de trabajo, y todo queda registrado en la auditoría.
+El cerebro nunca toca la máquina. Devuelve `{"texto", "chamadas"}`; quien ejecuta es INTELECTO, después del bloqueo: los comandos que solo leen se ejecutan, cualquier otro pide la aprobación del propietario, y los destructivos conocidos (`sudo`, `reboot`, `mkfs`, `rm -rf /`…) se bloquean incluso con aprobación. Lo que se ejecuta va a la caja Docker sin red, confinada a la carpeta de trabajo, y todo queda en el registro de auditoría.
 
 ### Pruebas
 
@@ -131,13 +135,13 @@ El cerebro nunca toca la máquina. Devuelve `{"texto", "chamadas"}`; quien ejecu
 
 | # | paso | comando | quién lo hace |
 |---|---|---|---|
-| 1 | Revisar la máquina (Python, Docker y qué cerebros hay) | `./instalar.sh` | ⚙️ script |
+| 1 | Revisar la máquina (Python, Docker, qué cerebros existen) | `./instalar.sh` | ⚙️ script |
 | 2 | Ensayo sin IA | `jarvis.py medir --cerebros mock --executor local` | ⚙️ script |
 | 3 | Medir la misma conversación con los cerebros | `jarvis.py medir` | ⚙️ script (llama a 🤖 `claude -p`, 🤖 `codex exec` y a la API de OpenRouter) |
 | 4 | Ejecutar las 8 tareas de la prueba estándar | `jarvis.py avaliar --cerebro <nome>` | ⚙️ script |
-| 4b | Cambiar de cerebro a mitad de conversación | `jarvis.py trocar --de <nome> --para <nome>` | ⚙️ script |
+| 4b | Cambiar el cerebro a mitad de la conversación | `jarvis.py trocar --de <nome> --para <nome>` | ⚙️ script |
 | 5 | Revisar los resultados y elegir el cerebro | `resultados/*.md` | 🧠 tú |
-| 6 | Usar a diario desde la terminal | `jarvis.py conversar --cerebro <nome>` | 🧠 tú |
+| 6 | Usar a diario por la terminal | `jarvis.py conversar --cerebro <nome>` | 🧠 tú |
 | 7 | Activar el bot de Telegram | `.env` + `systemctl --user enable --now jarvis-na-pratica-telegram` | 🧠 tú + ⚙️ servicio |
 | 8 | Conversar y cambiar la IA desde el celular | `/cerebro codex` | 🧠 tú |
 

@@ -78,6 +78,8 @@ git clone https://github.com/inematds/jarvis-na-pratica && cd jarvis-na-pratica
 
 **No dia a dia:** pelo Telegram (seção abaixo) ou pelo terminal: `conversar` abre a conversa; quando o cérebro pede uma ordem que muda algo, aparece `rodar '…'? [s/N]` e só roda com `s`.
 
+**Entrar no servidor e logar sem navegador:** `ssh usuário@endereço` (Terminal do Windows/PowerShell ou Terminal do Mac). O Claude Code mostra um link para abrir no navegador do seu computador e pede o código de volta; o Codex usa `codex login --device-auth`.
+
 **Onde foi testado:** só num servidor Linux alugado (Ubuntu 24.04, 4 processadores, 15 GB; [`resultados/maquina-vps6.txt`](resultados/maquina-vps6.txt)). Claude Code e Codex rodam em Windows, Mac e Linux pelas páginas oficiais ([Claude Code](https://code.claude.com/docs/en/setup), [Codex](https://developers.openai.com/codex/cli)), mas o kit e a caixa Docker só foram provados no Linux.
 
 Variáveis úteis: `CODEX_MODELO` (padrão `gpt-6.2-sol`), `CODEX_ESFORCO` (`low`), `OPENROUTER_MODELO` (`deepseek/deepseek-v4.1-flash`), `CLAUDE_BIN`, `CODEX_BIN`.
@@ -88,7 +90,9 @@ Variáveis úteis: `CODEX_MODELO` (padrão `gpt-6.2-sol`), `CODEX_ESFORCO` (`low
 2. **Guarde o token e os donos no `.env` do kit.** O arquivo fica fora do git. Cole o token direto no terminal da máquina (por exemplo, `nano .env`), nunca na conversa com a IA nem em chat:
    ```bash
    cd jarvis-na-pratica
-   umask 077 && printf 'TELEGRAM_BOT_TOKEN=%s\nDONOS=\n' "<token do BotFather>" > .env   # 600
+   touch .env && chmod 600 .env
+   nano .env      # escreva TELEGRAM_BOT_TOKEN=<cole o token> e, na linha de baixo, DONOS=
+                  # salvar: Ctrl+O e Enter · sair: Ctrl+X  (o token não fica no histórico do terminal)
    ```
 3. **Descubra o seu id:** ligue uma vez (`.venv/bin/python jarvis.py telegram`), mande `/id` ao bot, pare com Ctrl+C e ponha o número em `DONOS=` (vários: `DONOS=111,222`). Com `DONOS` vazio o bot só responde `/id`.
 4. **Ligue como serviço** (volta sozinho depois de reiniciar a máquina; precisa de `loginctl enable-linger $USER` para rodar sem você logado):
