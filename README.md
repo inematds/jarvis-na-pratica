@@ -85,7 +85,7 @@ Variáveis úteis: `CODEX_MODELO` (padrão `gpt-6.2-sol`), `CODEX_ESFORCO` (`low
 ### Usar pelo Telegram
 
 1. **Crie o bot:** no Telegram, `@BotFather` → `/newbot` → copie o token.
-2. **Guarde o token e os donos no `.env` do kit** (o arquivo fica fora do git; digite direto na máquina, nunca num chat):
+2. **Guarde o token e os donos no `.env` do kit.** O arquivo fica fora do git. Cole o token direto no terminal da máquina (por exemplo, `nano .env`), nunca na conversa com a IA nem em chat:
    ```bash
    cd jarvis-na-pratica
    umask 077 && printf 'TELEGRAM_BOT_TOKEN=%s\nDONOS=\n' "<token do BotFather>" > .env   # 600
@@ -94,7 +94,7 @@ Variáveis úteis: `CODEX_MODELO` (padrão `gpt-6.2-sol`), `CODEX_ESFORCO` (`low
 4. **Ligue como serviço** (volta sozinho depois de reiniciar a máquina; precisa de `loginctl enable-linger $USER` para rodar sem você logado):
    ```bash
    mkdir -p dados/area ~/.config/systemd/user
-   cp systemd/jarvis-na-pratica-telegram.service ~/.config/systemd/user/   # confira os caminhos (%h/kits/jarvis-na-pratica)
+   cp systemd/jarvis-na-pratica-telegram.gerado.service ~/.config/systemd/user/jarvis-na-pratica-telegram.service   # o instalar.sh gerou com o caminho desta pasta
    systemctl --user daemon-reload && systemctl --user enable --now jarvis-na-pratica-telegram
    journalctl --user -u jarvis-na-pratica-telegram -f      # deve mostrar "Jarvis no Telegram: @seu_bot"
    ```

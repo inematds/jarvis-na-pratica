@@ -4,3 +4,4 @@ __pycache__/
 *.codex.log
 .env
 dados/
+systemd/*.gerado.service

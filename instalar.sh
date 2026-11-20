@@ -20,4 +20,7 @@ if docker run --rm --network none python:3.12-slim python -c "print('caixa ok')"
 [ -n "${OPENROUTER_API_KEY:-}" ] || [ -f "${OPENROUTER_ENV:-$HOME/.config/inema/.env}" ] \
   && echo "openrouter: chave encontrada (não é mostrada)" || echo "openrouter: sem chave (cérebro openrouter fica de fora)"
 .venv/bin/python -m pytest -q testes
+# serviço do Telegram com o caminho REAL desta pasta (o modelo em systemd/ usa ~/kits/jarvis-na-pratica)
+sed "s#%h/kits/jarvis-na-pratica#$PWD#g" systemd/jarvis-na-pratica-telegram.service > systemd/jarvis-na-pratica-telegram.gerado.service
+echo "serviço do Telegram pronto para esta pasta: systemd/jarvis-na-pratica-telegram.gerado.service"
 echo "Pronto. Teste: .venv/bin/python jarvis.py medir --cerebros mock --executor local"
