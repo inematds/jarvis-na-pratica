@@ -4,6 +4,7 @@
   python3 jarvis.py conversar --cerebro claude      # conversa no terminal (OK pedido no terminal)
   python3 jarvis.py medir                            # a MESMA conversa nos 3 cérebros → resultados/
   python3 jarvis.py avaliar --cerebro codex          # as 8 tarefas do `intelecto avaliar` → resultados/
+  python3 jarvis.py trocar --de claude --para openrouter   # troca o cérebro no meio: o novo lembra?
   python3 jarvis.py medir --cerebros mock --executor local   # ensaio sem modelo, sem Docker
 
 Cérebros: claude (Claude Code, assinatura), codex (Codex, assinatura), openrouter (API, paga por uso), mock.
@@ -181,6 +182,35 @@ async def cmd_medir(a):
     print(f"\nsalvo: {base}.json e .md")
 
 
+async def cmd_trocar(a):
+    """Troca o cérebro NO MEIO da conversa: um guarda o fato, o outro precisa lembrar (a memória é do Jarvis)."""
+    import cerebros
+    from intelecto.avaliacao import _simples
+
+    async def perguntar(comando, motivo):
+        return False
+
+    primeiro = cerebros.criar(a.de)
+    p = montar_jarvis(primeiro, a.executor, perguntar)
+    passos = []
+    for cerebro, fala in ((primeiro, "lembre que o prazo do contrato da cliente Marta vence dia 12"),
+                          (None, "quando vence o prazo do contrato da cliente Marta?")):
+        if cerebro is None:
+            p.agente.provedor = cerebros.criar(a.para)   # a troca: só o cérebro muda
+        t0 = time.monotonic()
+        resposta = await asyncio.wait_for(p.agente.responder("dono", fala), 300)
+        passos.append({"cerebro": p.agente.provedor.nome, "modelo": getattr(p.agente.provedor, "modelo", ""),
+                       "fala": fala, "resposta": resposta[:300], "segundos": round(time.monotonic() - t0, 1)})
+        print(f"  [{p.agente.provedor.nome}] {fala} → {resposta[:120]}", flush=True)
+    acertou = "12" in _simples(passos[-1]["resposta"])
+    rel = {"quando": datetime.datetime.now().isoformat(timespec="seconds"), "maquina": os.uname().nodename,
+           "de": a.de, "para": a.para, "acertou": acertou, "passos": passos}
+    RESULTADOS.mkdir(exist_ok=True)
+    arq = RESULTADOS / f"troca-{a.de}-para-{a.para}-{rel['quando'][:16].replace(':', '')}.json"
+    arq.write_text(json.dumps(rel, ensure_ascii=False, indent=1))
+    print(("LEMBROU" if acertou else "NÃO LEMBROU") + f" depois da troca · salvo: {arq}")
+
+
 async def cmd_avaliar(a):
     import cerebros
     from intelecto import config as cfg
@@ -219,11 +249,12 @@ def main():
     m = sub.add_parser("medir"); m.add_argument("--cerebros", default="claude,codex,openrouter")
     v = sub.add_parser("avaliar"); v.add_argument("--cerebro", required=True)
     c = sub.add_parser("conversar"); c.add_argument("--cerebro", default="claude")
-    for s in (m, v, c):
+    t = sub.add_parser("trocar"); t.add_argument("--de", default="claude"); t.add_argument("--para", default="openrouter")
+    for s in (m, v, c, t):
         s.add_argument("--executor", default="caixa", choices=("caixa", "local"))
     a = ap.parse_args()
     importar_intelecto()
-    asyncio.run({"medir": cmd_medir, "avaliar": cmd_avaliar, "conversar": cmd_conversar}[a.cmd](a))
+    asyncio.run({"medir": cmd_medir, "avaliar": cmd_avaliar, "conversar": cmd_conversar, "trocar": cmd_trocar}[a.cmd](a))
 
 
 if __name__ == "__main__":
