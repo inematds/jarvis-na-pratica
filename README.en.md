@@ -39,7 +39,7 @@ The same 6-step conversation (disk → remember → recall → delete with NO �
 | OpenRouter (API) | deepseek/deepseek-v4.1-flash | 6/6 | 8.4 s | US$ 0.000891 |
 
 The 8 tasks in `intelecto avaliar`: 8/8 for all three (5.9 s, 6.5 s, and 1.6 s per task; OpenRouter charged US$ 0.002185).
-The raw records are in [`resultados/`](resultados/).
+The raw records are in [`resultados/`](resultados/) ([`maquina-vps6.txt`](resultados/maquina-vps6.txt)).
 
 ---
 

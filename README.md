@@ -39,7 +39,7 @@ A mesma conversa de 6 passos (disco → lembrar → recordar → apagar com NÃO
 | OpenRouter (API) | deepseek/deepseek-v4.1-flash | 6/6 | 8,4 s | US$ 0,000891 |
 
 As 8 tarefas do `intelecto avaliar`: 8/8 nos três (5,9 s, 6,5 s e 1,6 s por tarefa; o OpenRouter cobrou US$ 0,002185).
-Os registros brutos estão em [`resultados/`](resultados/).
+Os registros brutos estão em [`resultados/`](resultados/) (a máquina medida: [`maquina-vps6.txt`](resultados/maquina-vps6.txt)).
 
 ---
 
