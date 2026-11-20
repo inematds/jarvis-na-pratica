@@ -6,6 +6,7 @@
   python3 jarvis.py avaliar --cerebro codex          # as 8 tarefas do `intelecto avaliar` → resultados/
   python3 jarvis.py trocar --de claude --para openrouter   # troca o cérebro no meio: o novo lembra?
   python3 jarvis.py medir --cerebros mock --executor local   # ensaio sem modelo, sem Docker
+  python3 jarvis.py telegram --cerebro claude        # o Jarvis no Telegram (token e donos no .env do kit)
 
 Cérebros: claude (Claude Code, assinatura), codex (Codex, assinatura), openrouter (API, paga por uso), mock.
 O resto (canal, loop com freio, identidade, memória, ferramentas, trava/aprovação, caixa Docker sem rede)
@@ -72,10 +73,11 @@ class Medidor:
         return r
 
 
-def montar_jarvis(cerebro, executor, perguntar):
+def montar_jarvis(cerebro, executor, perguntar, home=None):
+    """home=None: pasta temporária (medição). No Telegram: pasta fixa, para a memória durar."""
     from intelecto import config as cfg
     from intelecto.montagem import montar
-    os.environ["INTELECTO_HOME"] = tempfile.mkdtemp(prefix="jarvis-")
+    os.environ["INTELECTO_HOME"] = home or tempfile.mkdtemp(prefix="jarvis-")
     c = cfg.Config()
     c.executor, c.aprovacao = executor, "perigosos"
     c.provedor, c.modelo = "externo", getattr(cerebro, "modelo", cerebro.nome)
@@ -250,10 +252,15 @@ def main():
     v = sub.add_parser("avaliar"); v.add_argument("--cerebro", required=True)
     c = sub.add_parser("conversar"); c.add_argument("--cerebro", default="claude")
     t = sub.add_parser("trocar"); t.add_argument("--de", default="claude"); t.add_argument("--para", default="openrouter")
-    for s in (m, v, c, t):
+    g = sub.add_parser("telegram"); g.add_argument("--cerebro", default="claude", choices=("claude", "codex", "openrouter"))
+    for s in (m, v, c, t, g):
         s.add_argument("--executor", default="caixa", choices=("caixa", "local"))
     a = ap.parse_args()
     importar_intelecto()
+    if a.cmd == "telegram":
+        import telegram_jarvis
+        asyncio.run(telegram_jarvis.rodar(a.cerebro, a.executor))
+        return
     asyncio.run({"medir": cmd_medir, "avaliar": cmd_avaliar, "conversar": cmd_conversar, "trocar": cmd_trocar}[a.cmd](a))
 
 

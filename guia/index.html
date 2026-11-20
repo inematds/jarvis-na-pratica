@@ -175,6 +175,7 @@
     <a class="sec opt" href="#como">Como funciona</a>
     <a class="sec" href="#cerebros">Qual cérebro</a>
     <a class="sec" href="#comecar">Como começar</a>
+    <a class="sec opt" href="#telegram">Telegram</a>
     <a class="sec opt" href="#prova">A prova</a>
     <span class="lang"><a class="on" href="./">PT</a><a href="en/">EN</a><a href="es/">ES</a></span>
     <button class="tgl" id="themeToggle" aria-label="Alternar tema" title="Alternar tema">🌙</button>
@@ -248,7 +249,7 @@
     <div class="card"><h3>📦 A caixa fechada</h3><p>O que é aprovado roda numa caixa sem internet, presa na pasta de trabalho (um programa chamado Docker monta essa caixa). Se algo der errado, fica lá dentro.</p></div>
     <div class="card"><h3>📒 A memória e o registro</h3><p>O que você pede para lembrar fica guardado no Jarvis, não na IA. E todo comando, aprovado ou não, fica anotado num registro.</p></div>
   </div>
-  <div class="card" style="margin-top:16px"><h3>💬 Como é usar no dia a dia</h3><p>Hoje você conversa com ele pela tela de comandos da máquina (o terminal): escreve o pedido, ele responde, e quando quer mudar algo pergunta "rodar? [s/N]". Falar pelo celular, pelo Telegram, é outro passo, que não está ligado nesta demonstração.</p></div>
+  <div class="card" style="margin-top:16px"><h3>💬 Como é usar no dia a dia</h3><p>Pelo <strong>Telegram</strong>, no celular: você manda a mensagem, ele responde, e quando quer mudar algo pergunta "Posso rodar este comando?" e espera o seu /sim ou /nao. Ou pela tela de comandos da própria máquina (o terminal), do mesmo jeito. Veja <a href="#telegram">Usar pelo Telegram</a>.</p></div>
   <div class="card" style="margin-top:16px"><h3>⚠️ O que isto não promete</h3><p>Não deixa nenhuma IA mais esperta: um cérebro fraco continua errando a resposta. O que fica garantido é a proteção: mesmo errando, ele não apaga nem reinicia nada sem passar pela trava. E foi uma rodada de teste em cada cérebro, num servidor: os tempos variam de um dia para outro.</p></div>
 </div></section>
 
@@ -287,6 +288,19 @@ Se eu aprovar, rode primeiro o ensaio sem IA e depois a conversa de teste só no
   <p class="mut" style="margin-top:16px">Quer entender as 8 peças do Jarvis antes? O <a href="https://inematds.github.io/intelecto-v2/guia/" target="_blank" rel="noopener">guia do INTELECTO v2</a> e o <a href="https://inematds.github.io/intelecto-v2-curso/" target="_blank" rel="noopener">curso grátis</a> explicam cada uma. E o <a href="https://inematds.github.io/telegram-claude-jarvis/guia/" target="_blank" rel="noopener">guia do conceito</a> mostra as duas formas de falar com a IA pelo Telegram.</p>
 </div></section>
 
+<section id="telegram"><div class="wrap">
+  <span class="chip">Usar pelo Telegram</span>
+  <h2>Fale com o seu Jarvis <span class="amb">pelo celular</span></h2>
+  <p class="sub">O Jarvis fica no computador ou servidor, e você conversa com ele pelo Telegram, de onde estiver. Só quem está na sua lista de donos consegue falar com ele; o resto é ignorado.</p>
+  <div class="grid g2">
+    <div class="card"><h3>1. Crie o seu bot</h3><p>No Telegram, abra o <strong>@BotFather</strong> (o robô oficial que cria bots), mande <strong>/newbot</strong> e escolha um nome. Ele te dá um código comprido: é a chave do seu bot. Guarde e não mostre a ninguém.</p></div>
+    <div class="card"><h3>2. Peça para a sua IA ligar</h3><p>Diga à sua IA (a mesma do "Como começar"): "ligue o modo Telegram do Jarvis na prática". Ela põe a chave num arquivo protegido da máquina e liga o serviço, que volta sozinho se a máquina reiniciar. A chave você digita direto na máquina, nunca num chat.</p></div>
+    <div class="card"><h3>3. Diga quem é o dono</h3><p>Mande <strong>/id</strong> para o seu bot: ele responde o seu número no Telegram. A IA põe esse número na lista de donos. Antes disso, o bot não responde a ninguém.</p></div>
+    <div class="card"><h3>4. Converse e troque a IA quando quiser</h3><p>Peça normalmente. Antes de mudar algo ele pergunta e espera <strong>/sim</strong> ou <strong>/nao</strong> (2 minutos). Para ver quem está pensando: <strong>/cerebro</strong>. Para trocar: <strong>/cerebro claude</strong>, <strong>/cerebro codex</strong> ou <strong>/cerebro openrouter</strong> (este é pago por uso). A memória e a trava ficam.</p></div>
+  </div>
+  <p class="fonte">Testado com um Telegram de mentira (dono passa, estranho é ignorado, apagar pede OK, "não" mantém, "sim" apaga, troca de cérebro lembra o que foi dito antes), e ligado num bot real no nosso servidor de teste.</p>
+</div></section>
+
 <section id="prova"><div class="wrap">
   <span class="chip">A prova</span>
   <h2>A mesma conversa, <span class="amb">nos três cérebros</span></h2>
@@ -320,7 +334,7 @@ Se eu aprovar, rode primeiro o ensaio sem IA e depois a conversa de teste só no
     <div class="card"><h3>Preciso dos três cérebros?</h3><p>Não. Um basta. Os três existem para você poder trocar quando quiser.</p></div>
     <div class="card"><h3>Funciona no meu Windows ou Mac?</h3><p>Testamos num servidor com Linux. A sua IA confere a sua máquina no passo 1 de "Como começar" e diz se dá.</p></div>
     <div class="card"><h3>A IA pode apagar algo sem eu ver?</h3><p>Não por este caminho. O cérebro não roda nada: quem roda é o Jarvis, depois da trava. Todo comando que não é só de olhar espera o seu OK, o que não tem volta é barrado, e os arquivos que ele cria ficam presos na pasta de trabalho.</p></div>
-    <div class="card"><h3>Funciona pelo Telegram?</h3><p>O INTELECTO tem canal de Telegram. Nesta demonstração a conversa foi pela tela de comandos da máquina (o terminal), para medir os três do mesmo jeito.</p></div>
+    <div class="card"><h3>Funciona pelo Telegram?</h3><p>Sim. Você cria o seu próprio bot e só você fala com ele. A medição dos três cérebros foi feita pelo terminal, para medir todos do mesmo jeito; o modo Telegram usa as mesmas peças. Veja <a href="#telegram">Usar pelo Telegram</a>.</p></div>
     <div class="card"><h3>E se eu já uso o INTELECTO?</h3><p>Este projeto não muda o seu INTELECTO: ele só acrescenta os três cérebros por fora.</p></div>
   </div>
   <p class="fonte" style="margin-top:22px">E você: se o seu assistente pudesse trocar de IA amanhã, qual você poria para pensar por ele? Grátis no inema.club, direto na internet.</p>
