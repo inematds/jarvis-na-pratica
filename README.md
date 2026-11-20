@@ -41,7 +41,7 @@ A mesma conversa de 6 passos (disco → lembrar → recordar → apagar com NÃO
 Troca de cérebro no meio da conversa (`jarvis.py trocar`): um cérebro guarda "o prazo do contrato da cliente Marta vence dia 12", outro responde depois da troca. Claude → OpenRouter: "Vence dia 12." OpenRouter → Codex: "O prazo do contrato da cliente Marta vence no dia 12." (a memória é do Jarvis).
 
 As 8 tarefas do `intelecto avaliar`: 8/8 nos três (5,9 s, 6,5 s e 1,6 s por tarefa; o OpenRouter cobrou US$ 0,002185).
-Os registros brutos estão em [`resultados/`](resultados/) (a máquina medida: [`maquina-vps6.txt`](resultados/maquina-vps6.txt)).
+Os registros brutos estão em [`resultados/`](resultados/) (a máquina medida: [`maquina-vps6.txt`](resultados/maquina-vps6.txt); uma instalação do zero: [`instalacao-limpa-2026-11-20.txt`](resultados/instalacao-limpa-2026-11-20.txt)).
 
 ---
 
@@ -89,7 +89,7 @@ Variáveis úteis: `CODEX_MODELO` (padrão `gpt-6.2-sol`), `CODEX_ESFORCO` (`low
 1. **Crie o bot:** no Telegram, `@BotFather` → `/newbot` → copie o token.
 2. **Guarde o token e os donos no `.env` do kit.** O arquivo fica fora do git. Cole o token direto no terminal da máquina (por exemplo, `nano .env`), nunca na conversa com a IA nem em chat:
    ```bash
-   cd jarvis-na-pratica
+   # na pasta do kit
    touch .env && chmod 600 .env
    nano .env      # escreva TELEGRAM_BOT_TOKEN=<cole o token> e, na linha de baixo, DONOS=
                   # salvar: Ctrl+O e Enter · sair: Ctrl+X  (o token não fica no histórico do terminal)
@@ -103,7 +103,7 @@ Variáveis úteis: `CODEX_MODELO` (padrão `gpt-6.2-sol`), `CODEX_ESFORCO` (`low
    journalctl --user -u jarvis-na-pratica-telegram -f      # deve mostrar "Jarvis no Telegram: @seu_bot"
    ```
    Parar: `systemctl --user stop jarvis-na-pratica-telegram` · religar: `systemctl --user restart jarvis-na-pratica-telegram` · desligar de vez: `systemctl --user disable --now jarvis-na-pratica-telegram`.
-5. **Comandos no chat:** `/cerebro` (mostra quem pensa) · `/cerebro claude|codex|openrouter` (troca; memória e trava ficam) · `/sim` e `/nao` (aprovação, 120 s) · `/id` · `/ajuda`.
+5. **Comandos no chat:** `/cerebro` (mostra quem pensa) · `/cerebro claude|codex|openrouter` (troca; memória e trava ficam) · `/sim` e `/nao` (aprovação, 120 s; `/yes`, `/no` e `/si` também valem) · `/id` · `/ajuda`.
 
 Por dentro: `telegram_jarvis.py` usa o canal do próprio INTELECTO (`intelecto/canais/telegram.py`: lista de donos, `/id`, aprovação por `/sim` `/nao`), com long polling (sem porta aberta) e trava de arquivo (uma instância só). O token é lido do `.env` sem ir para o ambiente do processo, então o `claude -p` e o `codex exec` nunca o recebem. A memória e a pasta de trabalho ficam em `dados/` (variável `JARVIS_HOME`) e duram entre reinícios. O serviço começa com o cérebro `claude`; o OpenRouter só entra se você mandar `/cerebro openrouter`.
 
@@ -120,7 +120,7 @@ Por dentro: `telegram_jarvis.py` usa o canal do próprio INTELECTO (`intelecto/c
 | `jarvis.py` | monta as 8 peças do INTELECTO com o cérebro escolhido (`montar(config, provedor=…)`), sem mudar o INTELECTO; `medir`, `avaliar`, `conversar`, `trocar` |
 | `instalar.sh` | venv + INTELECTO v2 fixo + conferência + testes |
 | `testes/test_cerebros.py` | 8 testes sem modelo: Claude e Codex falsos (scripts), OpenRouter falso (servidor local), conversa inteira com o mock |
-| `testes/test_telegram.py` | 5 testes sem Telegram nem modelo: Telegram falso (servidor local) e cérebros de roteiro — estranho ignorado, dono passa, /nao mantém, /sim apaga, /cerebro troca e lembra, token fora do ambiente, uma instância |
+| `testes/test_telegram.py` | 7 testes sem Telegram nem modelo: Telegram falso (servidor local) e cérebros de roteiro — sem dono só /id responde; com dono cadastrado, quem é de fora é ignorado e anotado na auditoria; dono passa; /nao mantém, /sim apaga (e /no, /yes); /cerebro troca e lembra; token fora do ambiente; uma instância |
 | `resultados/` | os JSON e MD das medições |
 
 O cérebro nunca toca na máquina. Ele devolve `{"texto", "chamadas"}`; quem roda é o INTELECTO, depois da trava: comando que só lê passa, qualquer outro pede o OK do dono, e os destrutivos conhecidos (`sudo`, `reboot`, `mkfs`, `rm -rf /`…) são barrados mesmo com OK. O que roda vai para a caixa Docker sem rede, presa na pasta de trabalho, e tudo entra no registro de auditoria.
@@ -128,7 +128,7 @@ O cérebro nunca toca na máquina. Ele devolve `{"texto", "chamadas"}`; quem rod
 ### Testes
 
 ```bash
-.venv/bin/python -m pytest -q testes     # 13 passed, sem chamar nenhum modelo nem o Telegram
+.venv/bin/python -m pytest -q testes     # 15 passed, sem chamar nenhum modelo nem o Telegram
 ```
 
 ## O processo, do início ao fim
